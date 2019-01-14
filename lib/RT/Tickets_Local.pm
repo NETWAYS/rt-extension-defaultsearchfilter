@@ -13,30 +13,26 @@ no warnings qw(redefine);
         my $self = shift;
         my $query = shift // '';
 
-        my $appendQuery = $self->SearchFilterAppendQuery();
+        my $minId = $self->SearchFilterMinTicketId();
 
-        if ($query && $appendQuery) {
-            if ($self->SearchFilterDisableOperator) {
-                $query = $appendQuery . ' ' . $query;
-            } else {
-                $query = sprintf('(%s) and (%s)', $appendQuery, $query);
+        if ($query && $minId > 0) {
+            if ($query !~ m/id\s+?[<>=!]/) {
+                RT->Logger->debug('DefaultSearchFilter: No id found. Append id to query');
+
+                $query = sprintf('id >= %d and (%s)', $minId, $query);
+
+                RT->Logger->debug('DefaultSearchFilter: New query [' . $query . ']');
             }
-
-            RT->Logger->debug('DefaultSearchFilter: Rewrite to ' . $query);
         }
 
         return $ticketFromSQL->($self, $query);
     };
 }
 
-sub SearchFilterAppendQuery {
+sub SearchFilterMinTicketId {
     my $self = shift;
 
-    return RT->Config->Get('DefaultSearchFilter_AppendQuery') // '';
-}
-
-sub SearchFilterDisableOperator {
-    return RT->Config->Get('DefaultSearchFilter_DisableOperator') // '';
+    return RT->Config->Get('DefaultSearchFilter_MinTicketId') // '';
 }
 
 1;

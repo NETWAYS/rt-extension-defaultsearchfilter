@@ -7,7 +7,7 @@ our $VERSION = '0.01';
 
 =head1 NAME
 
-RT-Extension-DefaultSearchFilter - Add RQL to every search operation
+RT-Extension-DefaultSearchFilter - Add minimum id to every search operation
 
 =head1 DESCRIPTION
 

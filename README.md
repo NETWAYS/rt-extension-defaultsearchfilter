@@ -11,10 +11,12 @@
 
 ## About
 
-This extensions adds a static query string to every query fired in RT. Mainly used to hide historical tickets or
+This extensions adds an id filter to every query fired in RT. Mainly used to hide historical tickets or
 hide specific status combination.
 
 You can still jump to tickets with a specific id. Only RTQL is restricted, not the perl oo interface.
+
+***If an id is configured in search, the filter will be omitted.***
 
 ## License
 
@@ -70,7 +72,7 @@ Edit your `/opt/rt4/etc/RT_SiteConfig.pm` configuration and include the extensio
 
 ```
 Plugin('RT::Extension::DefaultSearchFilter');
-Set($DefaultSearchFilter_AppendQuery, "id > 3000000");
+Set($DefaultSearchFilter_MinTicketId, 3000000);
 ```
 
 The above example generates the following result:
@@ -84,5 +86,5 @@ The above example generates the following result:
 ### Rewritten
 
 ```
-(id > 3000000) and ((Status = '__Active__') AND (Queue = 1 OR Queue = 3 OR Queue = 4))
+id >= 3000000 and ((Status = '__Active__') AND (Queue = 1 OR Queue = 3 OR Queue = 4)
 ```
